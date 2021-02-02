@@ -1,66 +1,74 @@
 import React, { useState, useEffect } from "react";
-import {
-  Modal,
-  Text,
-  TouchableOpacity,
-  View,
-  Image,
-  Platform,
-} from "react-native";
+import { View, Image, Platform, Button } from "react-native";
 import { Camera } from "expo-camera";
-import { Button } from "react-native-paper";
-import CameraModule from "./CameraModule";
-
+import * as ImagePicker from "expo-image-picker";
+import uploadImage from "./uploadImage";
 export default function ImagePickerExample() {
   const [image, setImage] = useState(null);
-  const [camera, setShowCamera] = useState(false);
-  const [hasPermission, setHasPermission] = useState(null);
+  const [resultImages, setResultImages] = useState(null);
   useEffect(() => {
     (async () => {
-      const { status } = await Camera.requestPermissionsAsync();
-      setHasPermission(status === "granted");
+      if (Platform.OS !== "web") {
+        const {
+          galleryStatus,
+        } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        const { cameraStatus } = await Camera.requestPermissionsAsync();
+        if (galleryStatus !== "granted" || cameraStatus !== "granted") {
+          alert(
+            "Sorry, we need camera and gallery permissions to make this work!"
+          );
+        }
+      }
     })();
   }, []);
 
-  if (hasPermission === null) {
-    return <View />;
-  }
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
+  const pickImageGallery = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    uploadImageHelper(result);
+  };
+  const pickImageCamera = async () => {
+    let result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      quality: 1,
+    });
+    uploadImageHelper(result);
+  };
+
+  async function uploadImageHelper(result) {
+    console.log(result);
+
+    if (!result.cancelled) {
+      setImage(result.uri);
+      uploadImage(result.uri, setResultImages);
+      console.log(resultImages);
+    }
   }
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <View
-        style={{
-          backgroundColor: "#eeee",
-          width: 120,
-          height: 120,
-          borderRadius: 100,
-          marginBottom: 8,
-        }}
-      >
-        <Image
-          source={{ uri: image }}
-          style={{ width: 120, height: 120, borderRadius: 100 }}
-        />
-      </View>
-      <Button
-        style={{ width: "30%", marginTop: 16 }}
-        icon="camera"
-        mode="contained"
-        onPress={() => {
-          setShowCamera(true);
-        }}
-      >
-        Camera
-      </Button>
-      {camera && (
-        <CameraModule
-          showModal={camera}
-          setModalVisible={() => setShowCamera(false)}
-          setImage={(result) => setImage(result.uri)}
-        />
+    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <Button title="Pick an image from Gallery" onPress={pickImageGallery} />
+      <Button title="Pick an image from Camera " onPress={pickImageCamera} />
+
+      {image && (
+        <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
       )}
+      {resultImages &&
+        resultImages.cannyURLs.map((uri, idx) => {
+          return (
+            <Image
+              source={{
+                uri,
+              }}
+              key={idx}
+              style={{ width: 200, height: 200 }}
+            />
+          );
+        })}
     </View>
   );
 }
