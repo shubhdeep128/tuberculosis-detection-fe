@@ -10,19 +10,15 @@ async function uploadImage(uri, next) {
     name,
     type,
   });
-  console.log(data);
+  // console.log(data);
   axios
-    .post(
-      `http://ec2-13-126-33-238.ap-south-1.compute.amazonaws.com:5050/api/upload`,
-      data,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    )
+    .post(`${serverUrl}api/upload`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
     .then((res) => {
-      console.log(res.data);
+      console.log("result" + res.data);
       next(res.data);
     })
     .catch((err) => {
