@@ -1,4 +1,3 @@
-import { StatusBar } from "expo-status-bar";
 import React, { useState, useContext } from "react";
 import {
     StyleSheet,
@@ -6,14 +5,10 @@ import {
     View,
     SafeAreaView,
     Button,
-    TouchableOpacity,
 } from "react-native";
-import Home from "./src/Home";
 import Login from "./src/Login";
 import AuthContext from "./src/auth/context";
 import ImagePicker from "./src/ImagePicker/ImagePicker";
-import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
 import * as Permissions from "expo-permissions";
 
 export default function App() {
@@ -27,10 +22,10 @@ export default function App() {
 
     if (!permission || permission.status !== "granted") {
         return (
-            <View>
+            <SafeAreaView style={styles.container}>
                 <Text>Permission is not granted</Text>
                 <Button title="Grant permission" onPress={askForPermission} />
-            </View>
+            </SafeAreaView>
         );
     }
     return (

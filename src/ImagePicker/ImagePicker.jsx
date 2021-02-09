@@ -1,23 +1,19 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import {
     ActivityIndicator,
     View,
     Image,
-    Platform,
     Text,
     StyleSheet,
-    TouchableOpacity,
 } from "react-native";
 import { Button } from "react-native-elements";
 import { Icon } from "react-native-elements";
 import * as ImagePicker from "expo-image-picker";
-import * as Permissions from "expo-permissions";
 import uploadImage from "./uploadImage";
 import AuthContext from "../auth/context";
 import { MethodPicker } from "./MethodPicker";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
-import SafeAreaView from "react-native-safe-area-view";
 
 const styles = StyleSheet.create({
     container: {

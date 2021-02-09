@@ -3,10 +3,8 @@ import { Button } from "react-native-elements";
 import { Icon } from "react-native-elements";
 import React, { useState, useContext } from "react";
 import * as Google from "expo-google-app-auth";
-import { IOS_CLIENT_ID, AND_CLIENT_ID } from "@env";
+import { IOS_CLIENT_ID, AND_CLIENT_ID } from "../apiKeys";
 import AuthContext from "./auth/context";
-import { createStackNavigator } from "@react-navigation/stack";
-import { NavigationContainer } from "@react-navigation/native";
 
 const styles = StyleSheet.create({
     container: {
