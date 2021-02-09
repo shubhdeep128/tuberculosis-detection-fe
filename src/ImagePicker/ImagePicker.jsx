@@ -76,6 +76,31 @@ function Welcome({ navigation }) {
     const [resultImages, setResultImages] = useState(null);
     const [loading, setLoading] = useState(false);
 
+    // const [
+    //     permission,
+    //     askPermission,
+    //     getPermission,
+    // ] = Permissions.usePermissions(
+    //     [Permissions.CAMERA, Permissions.MEDIA_LIBRARY],
+    //     { ask: true }
+    // );
+    // useEffect(() => {
+    //     (async () => {
+    //         try {
+    //             if (Platform.OS !== "web") {
+    //                 if (!permission || permission.status !== "granted") {
+                        
+    //                     askPermission();
+    //                 }
+    //             }
+    //         } catch (e) {
+    //             console.log(e);
+    //             console.log(permission);
+    //         }
+
+    //     })();
+    // }, []);
+
     const pickImageGallery = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -95,7 +120,7 @@ function Welcome({ navigation }) {
     };
 
     async function uploadImageHelper(result) {
-        console.log(result);
+        //console.log(result);
 
         if (!result.cancelled) {
             setImage(result.uri);
@@ -104,10 +129,10 @@ function Welcome({ navigation }) {
             setLoading(true);
             let response = await uploadImage(result.uri);
             setLoading(false);
-            console.log(response);
+            //console.log(response);
             setResultImages(response.data);
-            console.log("resultImages " + JSON.stringify(resultImages));
-            
+            //console.log("resultImages " + JSON.stringify(resultImages));
+
             navigation.navigate("Result", response.data);
         }
     }
@@ -206,32 +231,7 @@ function Result({ route }) {
 }
 
 export default function ImagePickerExample() {
-    // const [
-    //     permission,
-    //     askPermission,
-    //     getPermission,
-    // ] = Permissions.usePermissions(
-    //     [Permissions.CAMERA, Permissions.MEDIA_LIBRARY],
-    //     { ask: true }
-    // );
-    // useEffect(() => {
-    //     (async () => {
-    //         try {
-    //             if (Platform.OS !== "web") {
-    //                 if (!permission || permission.status !== "granted") {
-    //                     alert(
-    //                         "Sorry, we need camera and gallery permissions to make this work!"
-    //                     );
-    //                     askPermission();
-    //                 }
-    //             }
-    //         } catch (e) {
-    //             console.log(e);
-    //             console.log(permission);
-    //         }
-
-    //     })();
-    // }, []);
+    
 
     const Stack = createStackNavigator();
     // const StackNavigator = () => {
