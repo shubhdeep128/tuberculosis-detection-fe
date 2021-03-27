@@ -1,10 +1,11 @@
 {
   "expo": {
+    "scheme": "com.project.projectfe",
     "name": "project-fe",
     "slug": "project-fe",
-    "version": "1.0.0",
+    "version": "1.0.3",
     "orientation": "portrait",
-    "icon": "./assets/camera.png",
+    "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -13,18 +14,19 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      },
-      "package": "com.shubh_deep.projectfe"
+      "package": "com.project.projectfe",
+      "versionCode": 4,
+      "config": {
+        "googleSignIn": {
+          "apiKey": "AIzaSyBlUqJRN4ZhuBRO404NnNcT-AYPx5iHTSA",
+          "certificateHash": "AE78CC9127E4AA081CD34A42D5AEDE6ED1EABACF"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
