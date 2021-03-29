@@ -9,10 +9,11 @@ export const MethodPicker = ({ selectedMethod, setSelectedMethod }) => {
       }}
       style={{ height: 50, width: 200 }}
     >
-      <Picker.Item label="Canny" value="cannyURLs" />
-      <Picker.Item label="SobelX" value="sobelXURLs" />
-      <Picker.Item label="SobelY" value="sobelYURLs" />
-      <Picker.Item label="Laplacian" value="laplacianURLs" />
+      <Picker.Item label="Canny" value="cannyUrl" />
+      <Picker.Item label="SobelX" value="sobelXUrl" />
+      <Picker.Item label="SobelY" value="sobelYUrl" />
+      <Picker.Item label="Laplacian" value="laplacianUrl" />
+      <Picker.Item label="Otsu" value="otsuUrl" />
     </Picker>
   );
 };

@@ -9,6 +9,9 @@ import { MethodPicker } from "./MethodPicker";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import storage from "../auth/storage";
+import { WebView } from "react-native-webview";
+import Base64 from "Base64";
+import { serverUrl } from "../../constants";
 
 import ProcessImage from "./ProcessImage";
 
@@ -36,19 +39,24 @@ const styles = StyleSheet.create({
   spinnerTextStyle: {
     color: "#FFF",
   },
+  titleText: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
 });
 
 const ImageWrapper = ({ uri }) => {
   const [loading, setLoading] = useState(true);
   return (
-    <View style={{ width: 200, height: 200, marginVertical: 20 }}>
+    <View style={{ width: 300, height: 300, marginVertical: 20 }}>
       <Image
         source={{ uri: uri }}
         style={{
-          width: 200,
-          height: 200,
+          width: 300,
+          height: 300,
           borderRadius: 10,
         }}
+        resizeMode="contain"
         onLoadStart={() => setLoading(true)}
         onLoadEnd={() => {
           setLoading(false);
@@ -122,7 +130,7 @@ function Welcome({ navigation }) {
       setLoading(true);
       let response = await uploadImage(result.uri);
       setLoading(false);
-      //console.log(response);
+      console.log(response.data);
       setResultImages(response.data);
       console.log("resultImages " + JSON.stringify(resultImages));
 
@@ -175,8 +183,12 @@ function Welcome({ navigation }) {
 }
 function Result({ route }) {
   //console.log(route.params);
-  const resultImages = route.params;
-  const [selectedMethod, setSelectedMethod] = useState("cannyURLs");
+  const resultImages = route.params.data;
+  const [selectedMethod, setSelectedMethod] = useState("cannyUrl");
+  const imageUrl = resultImages["imageUrl"];
+  const encoded = Base64.btoa(imageUrl);
+  const id = resultImages._id;
+  const [original, setOriginal] = useState(false);
 
   const ResultSection = ({
     // resultImages,
@@ -191,20 +203,120 @@ function Result({ route }) {
       );
     return (
       resultImages && (
-        <View>
+        <View style={{ justifyContent: "center", alignItems: "center" }}>
           <MethodPicker
             selectedMethod={selectedMethod}
             setSelectedMethod={setSelectedMethod}
           />
-          <ImageWrapper uri={resultImages[selectedMethod][0]} />
+          <ImageWrapper uri={resultImages[selectedMethod]} />
+          {selectedMethod === "cannyUrl" && (
+            <View
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: 20,
+              }}
+            >
+              <Text style={styles.titleText}>
+                Area : {resultImages["cannyArea"]} pixels
+              </Text>
+              <Text style={styles.titleText}>
+                Perimeter : {resultImages["cannyPerimeter"]} pixels
+              </Text>
+            </View>
+          )}
+          {selectedMethod === "laplacianUrl" && (
+            <View
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: 20,
+              }}
+            >
+              <Text style={styles.titleText}>
+                Area : {resultImages["laplacianArea"]} pixels
+              </Text>
+              <Text style={styles.titleText}>
+                Perimeter : {resultImages["laplacianPerimeter"]} pixels
+              </Text>
+            </View>
+          )}
+          {selectedMethod === "sobelXUrl" && (
+            <View
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: 20,
+              }}
+            >
+              <Text style={styles.titleText}>
+                Area : {resultImages["sobelXArea"]} pixels
+              </Text>
+              <Text style={styles.titleText}>
+                Perimeter : {resultImages["sobelXPerimeter"]} pixels
+              </Text>
+            </View>
+          )}
+          {selectedMethod === "sobelYUrl" && (
+            <View
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: 20,
+              }}
+            >
+              <Text style={styles.titleText}>
+                Area : {resultImages["sobelYArea"]} pixels
+              </Text>
+              <Text style={styles.titleText}>
+                Perimeter : {resultImages["sobelYPerimeter"]} pixels
+              </Text>
+            </View>
+          )}
+          {selectedMethod === "otsuUrl" && (
+            <View
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: 20,
+              }}
+            >
+              <Text style={styles.titleText}>
+                Area : {resultImages["otsuArea"]} pixels
+              </Text>
+              <Text style={styles.titleText}>
+                Perimeter : {resultImages["otsuPerimeter"]} pixels
+              </Text>
+            </View>
+          )}
         </View>
       )
     );
   };
 
-  return (
+  // return (
+  //   <WebView
+  //     source={{
+  //       uri: serverUrl + "imageView/" + encoded + "/" + id,
+  //     }}
+  //     style={{ marginTop: 0 }}
+  //   />
+  // );
+
+  return original ? (
+    <View style={{ flex: 1 }}>
+      <WebView
+        onMessage={(event) => {
+          setOriginal(false);
+        }}
+        source={{
+          uri: serverUrl + "imageView/" + encoded + "/" + id,
+        }}
+        style={{ flex: 1 }}
+      />
+    </View>
+  ) : (
     <View style={styles.container}>
-      {resultImages && <ImageWrapper uri={resultImages["URLs"][0]} />}
       <View>
         <ResultSection
           resultImages={resultImages}
@@ -212,6 +324,10 @@ function Result({ route }) {
           setSelectedMethod={setSelectedMethod}
         />
       </View>
+      <Button
+        onPress={() => setOriginal(true)}
+        title="Click to see the original image"
+      />
     </View>
   );
 }
